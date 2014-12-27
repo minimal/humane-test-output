@@ -15,6 +15,7 @@
                             :expected a#, :actual more#})
                 (do-report {:type :fail, :message ~msg,
                             :expected a#, :actual more#,
+                            :raw (apply list '~'= a# more#)
                             :diffs (map vector
                                         more#
                                         (map #(take 2 (data/diff a# %))
@@ -29,12 +30,13 @@
        (assert-= msg a more))
 
      (defmethod report :fail
-       [{:keys [type expected actual diffs message] :as event}]
+       [{:keys [type expected actual diffs message raw] :as event}]
        (with-test-out
          (inc-report-counter :fail)
          (println "\nFAIL in" (testing-vars-str event))
          (when (seq *testing-contexts*) (println (testing-contexts-str)))
          (when message (println message))
+         (when raw (pp/pprint raw))
          (binding [*out* (pp/get-pretty-writer *out*)]
            (let [print-expected (fn [actual]
                                   (print "expected: ")
