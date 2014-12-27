@@ -17,6 +17,7 @@
             :another-key "and another value"}))
     (is (= {:foo :bar :baz :quux} {:foo :bar :baz :quux} {:fo :bar :baz :quux}
            {:fo :bar :baz :quux}))
+    (is (clojure.core/= #{1 2 3} #{2 3 4}))
     (let [foo {:foo :bar :baz :quux :something "a long string?"
                :another-key "and another value"}]
       (is (list? foo)))))

@@ -6,7 +6,7 @@
 (defonce activation-body
   (delay
    (when (not (System/getenv "INHUMANE_TEST_OUTPUT"))
-     (defmethod assert-expr '= [msg [_ a & more]]
+     (defn assert-= [msg a more]
        `(let [a# ~a]
           (if-let [more# (seq (list ~@more))]
             (let [result# (apply = a# more#)]
@@ -21,6 +21,12 @@
                                              more#))}))
               result#)
             (throw (Exception. "= expects more than one argument")))))
+
+     (defmethod assert-expr '= [msg [_ a & more]]
+       (assert-= msg a more))
+
+     (defmethod assert-expr 'clojure.core/= [msg [_ a & more]]
+       (assert-= msg a more))
 
      (defmethod report :fail
        [{:keys [type expected actual diffs message] :as event}]
